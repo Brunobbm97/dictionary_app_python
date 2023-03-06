@@ -66,12 +66,46 @@ l_linha.place(x=0, y=47)
 
 #funcao procurar e acessar a API
 def procurar():
-    api_link = "https://dicio-api-ten.vercel.app/v2/comer"
+    # Obtendo a palavra
+    palavra = e_palavra.get()
+
+    l_palavra['text'] = palavra
+    api_link = "https://dicio-api-ten.vercel.app/v2/{}".format(palavra)
     r = requests.get(api_link)
     dados = r.json()
 
+    #dicionario para salvar o nome das variaveis dos frames
+    frames = {}
+
+    # contador de linhas para frame
+    num_row = 0
+
     for i in range(len(dados)):
         # criando um novo frame e posicionar dentro do framecanva
+        frames["F{}".format(i)] = i
+        frames["F{}".format(i)] = Frame(framecanva, width=310, height=100, bg=co1)
+        frames["F{}".format(i)].grid(row=num_row, column=0, sticky=NSEW, pady=2)
+
+        # Significado
+        l_significado = Label(frames["F{}".format(num_row)], height=1,anchor=NW, font=('Ivy 10 bold'),bg=co1, fg=co0)
+        l_significado.place(x=10, y=5)
+
+        #exemplos
+        #wraplength -> quando chega no limite ele pula para próxima linha
+        l_exemplo = Label(frames["F{}".format(num_row)], text="", wraplength=305, justify=LEFT, height=4, anchor=NW, font=('Ivy 9'), bg=co1, fg=co0)
+        l_exemplo.place(x=10, y=30)
+
+        # Passando o significado no label
+        l_significado['text'] = (dados[i]['partOfSpeech'])
+
+        # Passando Exemplos para o Label exemplos
+        for j in dados[i]['meanings']:
+            l_exemplo['text'] = (j)
+
+        # incrementando o valor da linha
+        num_row += 1
+
+
 
 
 # Frame Meio -----------------------------
